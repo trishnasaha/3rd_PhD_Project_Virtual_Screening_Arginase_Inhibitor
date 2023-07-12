@@ -1,0 +1,69 @@
+ ########### minimization file #######################
+
+structure          ionized.psf
+coordinates        ionized.pdb
+
+set temperature    298.15  ;# target temperature used several times below
+
+temperature         $temperature    ;# initialize velocities randomly
+
+outputName         minimize   ;# base name for output from this run
+
+# Output
+
+restartfreq         500     ;# 500steps = every 1ps
+dcdfreq             1000
+xstFreq             1000
+outputEnergies      1000
+outputPressure      1000
+outputTiming        1000    ;# shows time per step and time to completion
+
+# Force-Field Parameters
+paraTypeCharmm	    on
+parameters         /home/hen-vol/sahatri/Project/01_CDD/03_NAMD/mol_dynamics/3sjt_final/charm_parameter_files/par_all22_prot.prm
+parameters         /home/hen-vol/sahatri/Project/01_CDD/03_NAMD/mol_dynamics/3sjt_final/charm_parameter_files/par_all35_ethers.prm
+parameters         /home/hen-vol/sahatri/Project/01_CDD/03_NAMD/mol_dynamics/3sjt_final/charm_parameter_files/par_all36m_prot.prm
+parameters         /home/hen-vol/sahatri/Project/01_CDD/03_NAMD/mol_dynamics/3sjt_final/charm_parameter_files/par_all36_carb.prm 
+parameters         /home/hen-vol/sahatri/Project/01_CDD/03_NAMD/mol_dynamics/3sjt_final/charm_parameter_files/par_all36_lipid.prm 
+parameters         /home/hen-vol/sahatri/Project/01_CDD/03_NAMD/mol_dynamics/3sjt_final/charm_parameter_files/par_all36_cgenff1.prm 
+parameters         /home/hen-vol/sahatri/Project/01_CDD/03_NAMD/mol_dynamics/3sjt_final/charm_parameter_files/par_all36_na.prm
+parameters         /home/hen-vol/sahatri/Project/01_CDD/03_NAMD/mol_dynamics/3sjt_final/charm_parameter_files/toppar_water_ions_namd_new.str
+parameters         /home/hen-vol/sahatri/Project/01_CDD/03_NAMD/mol_dynamics/3sjt_final/amiloride_fda_ligand_0998/ligand1.str
+#parameters        /home/hen-vol/sahatri/Project/01_CDD/03_NAMD/mol_dynamics/3sjt_final/amiloride_fda_ligand_0998/lig.prm
+
+# These are specified by CHARMM
+exclude             scaled1-4
+1-4scaling          1.0
+switching           on
+
+# You have some freedom choosing the cutoff
+cutoff              12.0 ;# may use smaller, maybe 10., with PME
+switchdist          10.0 ;# cutoff - 2.
+
+# Promise that atom won't move more than 2A in a cycle
+pairlistdist        14.0 ;# cutoff + 2.
+
+# Integrator Parameters
+timestep            2.0  ;# 2fs/step
+rigidBonds          all  ;# needed for 2fs steps
+nonbondedFreq       1    ;# nonbonded forces every step
+fullElectFrequency  2    ;# PME only every other step
+
+# Constant Temperature Control
+langevin            on            ;# langevin dynamics
+langevinDamping     1.            ;# damping coefficient of 1/ps
+langevinTemp        $temperature  ;# random noise at this level
+langevinHydrogen    off            ;# don't couple bath to hydrogens
+
+# Periodic Boundary conditions
+cellBasisVector1 89.44300079345703 0 0
+cellBasisVector2 0 65.13300132751465 0
+cellBasisVector3 0 0 71.17500018328428
+cellOrigin 3.2351131439208984 -20.26202964782715 35.61388397216797
+wrapAll             on
+
+# PME (for full-system periodic electrostatics)
+PME                 yes
+PMEGridSpacing      1.0
+
+minimize            1000          ;# lower potential energy for 1000 steps
