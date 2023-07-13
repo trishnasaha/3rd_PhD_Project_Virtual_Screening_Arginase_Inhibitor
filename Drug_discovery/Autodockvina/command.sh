@@ -13,6 +13,3 @@ Prefix for ligands will be fda_ligand_
 Prefix for flexible side chains will be fda_flex_
 
 
-## MD simulation
-## to submit npt1.namd
-nohup bash shell.sh &
